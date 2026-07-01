@@ -1,36 +1,36 @@
-const sqlite3 = require('sqlite3').verbose();
-const bcrypt = require('bcryptjs');
+const Database = require('better-sqlite3');
 
-const db = new sqlite3.Database('./chat.db');
+const db = new Database(process.env.NODE_ENV === 'production' ? ':memory:' : './chat.db');
 
-db.serialize(() => {
-  // Таблица пользователей
-  db.run(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE,
-    password TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`);
+db.pragma('journal_mode = WAL');
 
-  // Таблица комнат
-  db.run(`CREATE TABLE IF NOT EXISTS rooms (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT UNIQUE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`);
+// Таблица пользователей
+db.exec(`CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE,
+  password TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)`);
 
-  // Таблица сообщений
-  db.run(`CREATE TABLE IF NOT EXISTS messages (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    room_id INTEGER,
-    author TEXT,
-    text TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (room_id) REFERENCES rooms(id)
-  )`);
+// Таблица комнат
+db.exec(`CREATE TABLE IF NOT EXISTS rooms (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT UNIQUE,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)`);
 
-  // Создаём дефолтную комнату
-  db.run(`INSERT OR IGNORE INTO rooms (name) VALUES ('general')`);
-});
+// Таблица сообщений
+db.exec(`CREATE TABLE IF NOT EXISTS messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  room_id INTEGER,
+  author TEXT,
+  text TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (room_id) REFERENCES rooms(id)
+)`);
+
+// Создаём дефолтную комнату
+const stmt = db.prepare('INSERT OR IGNORE INTO rooms (name) VALUES (?)');
+stmt.run('general');
 
 module.exports = db;
