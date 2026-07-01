@@ -1,0 +1,5 @@
+export const ADD_MESSAGE = 'ADD_MESSAGE';
+export const ADD_USER = 'ADD_USER';
+export const SEND_MESSAGE = 'SEND_MESSAGE';
+export const USER_CONNECTED = 'USER_CONNECTED';
+export const USER_DISCONNECTED = 'USER_DISCONNECTED';
