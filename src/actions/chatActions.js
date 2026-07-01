@@ -24,3 +24,23 @@ export const userDisconnected = (username) => ({
   type: types.USER_DISCONNECTED,
   payload: username
 });
+
+export const authSuccess = (username) => ({
+  type: types.AUTH_SUCCESS,
+  payload: username
+});
+
+export const joinRoom = (roomId) => ({
+  type: types.JOIN_ROOM,
+  payload: roomId
+});
+
+export const setRooms = (rooms) => ({
+  type: types.SET_ROOMS,
+  payload: rooms
+});
+
+export const addRoom = (room) => ({
+  type: types.ADD_ROOM,
+  payload: room
+});

@@ -2,7 +2,10 @@ import * as types from '../actions/ActionTypes';
 
 const initialState = {
   messages: [],
-  users: []
+  users: [],
+  rooms: [],
+  currentRoom: null,
+  currentUser: null
 };
 
 const chatReducer = (state = initialState, action) => {
@@ -26,6 +29,27 @@ const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         users: state.users.filter(u => u !== action.payload)
+      };
+    case types.AUTH_SUCCESS:
+      return {
+        ...state,
+        currentUser: action.payload
+      };
+    case types.JOIN_ROOM:
+      return {
+        ...state,
+        currentRoom: action.payload,
+        messages: [] // Очищаем сообщения при смене комнаты
+      };
+    case types.SET_ROOMS:
+      return {
+        ...state,
+        rooms: action.payload
+      };
+    case types.ADD_ROOM:
+      return {
+        ...state,
+        rooms: [...state.rooms, action.payload]
       };
     default:
       return state;

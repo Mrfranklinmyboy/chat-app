@@ -9,13 +9,14 @@ export const setupWebSocket = (dispatch, username) => {
     console.log('WebSocket connected');
     setSocket(socket);
     socket.send(JSON.stringify({
-      type: 'ADD_USER',
-      payload: username
+      type: 'AUTH',
+      payload: { username }
     }));
   };
   
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
+    console.log('WebSocket received:', data);
     dispatch(data);
   };
   
@@ -23,5 +24,11 @@ export const setupWebSocket = (dispatch, username) => {
     console.log('WebSocket disconnected');
   };
   
+  socket.onerror = (error) => {
+    console.error('WebSocket error:', error);
+  };
+  
   return socket;
 };
+
+export default setupWebSocket;

@@ -3,3 +3,7 @@ export const ADD_USER = 'ADD_USER';
 export const SEND_MESSAGE = 'SEND_MESSAGE';
 export const USER_CONNECTED = 'USER_CONNECTED';
 export const USER_DISCONNECTED = 'USER_DISCONNECTED';
+export const AUTH_SUCCESS = 'AUTH_SUCCESS';
+export const JOIN_ROOM = 'JOIN_ROOM';
+export const SET_ROOMS = 'SET_ROOMS';
+export const ADD_ROOM = 'ADD_ROOM';
