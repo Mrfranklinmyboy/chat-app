@@ -8,26 +8,30 @@ import RoomList from './RoomList';
 import { authSuccess, setRooms, joinRoom, addRoom } from '../actions/chatActions';
 import './App.css';
 
+const API_URL = 'https://chat-app-p420.onrender.com';
+
 const App = ({ currentUser, currentRoom, rooms, authSuccess, setRooms, joinRoom, addRoom }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Загружаем комнаты при старте
-    fetch('http://localhost:3001/api/rooms')
+    fetch(API_URL + '/api/rooms')
       .then(res => res.json())
       .then(data => {
         setRooms(data);
         setIsLoading(false);
+        if (data.length > 0 && !currentRoom) {
+          joinRoom(data[0].id);
+        }
       })
       .catch(err => {
         console.error('Error loading rooms:', err);
         setIsLoading(false);
       });
-  }, [setRooms]);
+  }, [setRooms, currentRoom, joinRoom]);
 
   const handleLogin = async (username, password) => {
     try {
-      const res = await fetch('http://localhost:3001/api/login', {
+      const res = await fetch(API_URL + '/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -37,15 +41,17 @@ const App = ({ currentUser, currentRoom, rooms, authSuccess, setRooms, joinRoom,
         authSuccess(data.username);
         localStorage.setItem('token', data.token);
         localStorage.setItem('username', data.username);
+      } else {
+        alert('Ошибка: ' + (data.error || 'Неизвестная ошибка'));
       }
     } catch (error) {
-      alert('Ошибка входа');
+      alert('Ошибка входа: ' + error.message);
     }
   };
 
   const handleRegister = async (username, password) => {
     try {
-      const res = await fetch('http://localhost:3001/api/register', {
+      const res = await fetch(API_URL + '/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -55,15 +61,17 @@ const App = ({ currentUser, currentRoom, rooms, authSuccess, setRooms, joinRoom,
         authSuccess(data.username);
         localStorage.setItem('token', data.token);
         localStorage.setItem('username', data.username);
+      } else {
+        alert('Ошибка: ' + (data.error || 'Неизвестная ошибка'));
       }
     } catch (error) {
-      alert('Ошибка регистрации');
+      alert('Ошибка регистрации: ' + error.message);
     }
   };
 
   const handleCreateRoom = async (name) => {
     try {
-      const res = await fetch('http://localhost:3001/api/rooms', {
+      const res = await fetch(API_URL + '/api/rooms', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name })

@@ -3,7 +3,8 @@ import { setSocket } from '../sagas/chatSaga';
 let socket = null;
 
 export const setupWebSocket = (dispatch, username) => {
-  socket = new WebSocket('ws://localhost:8080');
+  const WS_URL = 'wss://chat-app-p420.onrender.com';
+  socket = new WebSocket(WS_URL);
   
   socket.onopen = () => {
     console.log('WebSocket connected');
